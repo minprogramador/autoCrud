@@ -72,6 +72,8 @@ const form = {
 //============================================================================//
 
 const createTable=function(data){
+  try{
+
     const table = document.createElement("table");
           table.setAttribute('class', 'ui very basic table');
     const thead = document.createElement("thead");
@@ -113,6 +115,9 @@ const createTable=function(data){
     table.appendChild(tbody);
 
     return table;
+  }catch(e){
+    return false;
+  }
 }
 
 //============================================================================//
@@ -152,6 +157,224 @@ const getHtml = (arquivo) => {
     console.log('Erro, import html nao existe, arquivo => %s', arquivo);
   }
 };
+
+//============================================================================//
+
+const buildView = (json) => {
+
+    if(typeof json === 'string') {
+        json = JSON.parse(json);
+    }
+    var html = `<div class="ui text container">
+        <div class="ui section divider"></div>
+        <h4 class="ui top attached block header" id="msgbody">
+        </h4>
+        <div class="ui attached segment">
+          <table class="ui very basic table">
+      <tbody>`;
+    var formok1 = '';
+
+    for(let key in json) {
+      html += `
+        <div class="ui black table">
+          <form class="ui form attached fluid segment frmtemplateok">
+            <h2 class="ui dividing header">${key}</h2>`;
+
+      if(typeof json[key] === 'object') {
+        let zoneTitle = key;
+
+        var formok = '';
+        
+        for (var key0 in json[key]) { 
+          console.log('aqqqq');
+          // formok += `
+          //   <tr>
+          //     <td class="left aligned">${key0}:   ${json[key][key0]}</td>
+          //   </tr>`;
+            formok += `<tr>
+              <td class="left aligned"><strong>${key0}:</strong> <span style="margin-left:5px;">${json[key][key0]}</span></td>
+            </tr>`;
+
+    // formok1 += `
+    //     <div class="field">
+    //         <label>${key}</label>
+    //         <input type="text" name="${key}" placeholder="${json[key]}">
+    //     </div>`;
+        }
+
+       html += `
+
+            ${formok}
+          </form>
+        </div>
+        `;
+
+      }else{
+
+        formok1 += `
+          <tr>
+              <td class="left aligned"><strong>${key}:</strong> <span style="margin-left:5px;">${json[key]}</span></td>
+            </tr>`;
+
+    
+
+      }
+
+    }
+    
+
+    if(formok1 !== ''){
+
+      var bodyfinal = `
+      <div class="ui text container">
+        <div class="ui section divider"></div>
+        <h4 class="ui top attached block header" id="msgbody">
+        </h4>
+        <div class="ui attached segment">
+          <table class="ui very basic table">
+      <tbody>`;
+
+      bodyfinal += formok1;
+      bodyfinal += `
+      </tbody>
+          </table>
+        </div>
+        <h4 class="ui bottom attached block header">
+          <center>
+            <div class="ui buttons">
+              <button class="ui button">Voltar</button>
+              <div class="or"></div>
+              <button class="ui positive button">Editar</button>
+            </div>
+          </center>
+        </h4>
+      </div>
+      `;
+
+      return bodyfinal;
+
+    }else{
+      return buildViewAll(json);
+    }
+
+
+};
+
+
+const buildViewAll = (json) => {
+    if(typeof json === 'string') {
+        json = JSON.parse(json);
+    }
+    var html = '';
+    var formok1 = '';
+
+    for(let key in json) {
+
+      if(typeof json[key] === 'object') {
+        let zoneTitle = key;
+
+        var formok = '';
+        for (var key0 in json[key]) { 
+            formok += `
+            <tr>
+              <td class="left aligned"><strong>${key0}</storng><span style="margin-left:10px">${json[key][key0]}<span></td>
+            </tr>`;
+        }
+
+       html += `
+
+
+<div class="ui text container">
+  <div class="ui section divider"></div>
+  <h4 class="ui top attached block header">
+    ${zoneTitle}
+    </h4>
+  <div class="ui attached segment">
+    <table class="ui very basic table">
+      <tbody>
+        ${formok}
+      </tbody>
+    </table>
+  </div>
+  <h4 class="ui bottom attached block header">
+    <center>
+      <div class="ui buttons">
+        <button class="ui button">Voltar</button>
+        <div class="or"></div>
+        <button class="ui positive button">Editar</button>
+      </div>
+    </center>
+  </h4>
+</div>
+        `;
+
+      }else{
+        formok1 += `
+        <div class="field">
+            <label>${key}</label>
+            <input type="text" name="${key}" placeholder="${json[key]}">
+        </div>`;
+
+      }
+    }
+    if(formok1 !== ''){
+      return buildView(json);
+    }else{
+      return html;
+    }
+}
+
+const buildFrm = (json) => {
+    if(typeof json === 'string') {
+        json = JSON.parse(json);
+    }
+    var html = '';
+    var formok1 = '';
+
+    for(let key in json) {
+
+      if(typeof json[key] === 'object') {
+        let zoneTitle = key;
+
+        var formok = '';
+        for (var key0 in json[key]) { 
+            formok += `
+            <div class="field">
+                <label>${key0}</label>
+                <input type="text" name="${key0}" placeholder="${json[key][key0]}">
+            </div>`;
+        }
+
+       html += `
+
+        <div class="ui black table">
+          <form class="ui form attached fluid segment frmtemplateok">
+            <h2 class="ui dividing header">${zoneTitle}</h2>
+            ${formok}
+          </form>
+        </div>
+        `;
+
+      }else{
+        formok1 += `
+        <div class="field">
+            <label>${key}</label>
+            <input type="text" name="${key}" placeholder="${json[key]}">
+        </div>`;
+
+      }
+    }
+    if(formok1 !== ''){
+      return ` <div class="ui centered grid"><div class="ui black table ui twelve wide computer column">
+          <form class="ui form attached fluid segment frmtemplateok">
+            ${formok1}
+          </form>
+        </div></div>`;
+    }else{
+      console.log(html);
+      return html;
+    }
+}
 
 //============================================================================//
 
@@ -215,6 +438,8 @@ function replaceMe(template, data) {
 
 //============================================================================//
 
+//============================================================================//
+
 const app = {
   getHtml: getHtml,
   addEl:   adicionarElemento,
@@ -225,6 +450,8 @@ const app = {
   form:     form,
   addForm:  addForm,
   createTable: createTable,
-  addObjHtml:  addObjHtml
+  addObjHtml:  addObjHtml,
+  buildFrm: buildFrm,
+  buildView: buildView
 };
 

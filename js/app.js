@@ -44,51 +44,100 @@ let p = {
   }
 };
 
+//============================================================================//
+
 let appNome = 'ApiControl';
 
+var pglogin = app.getHtml('login.html');
+app.addHtml('#app', pglogin);
+
+function mapear() {
+  var url = encodeURI(document.querySelector('#url').value);
+  let urlok = 'http://localhost:3000/proxy.php?url=' + url;
+
+
+  get(urlok).then(function(text) {
+  document.getElementById('app').innerHTML = "";
+  // app.addHtml('#app', pglogin);
+
+    var dados = JSON.parse(text);
+    var tablemount = app.createTable(dados);
+
+    if(typeof tablemount === 'object') {
+        var table   = app.getHtml('table.html');
+        app.addHtml('#app', '<br><br>');
+        app.addHtml('#app', table);
+        app.addObjHtml('#table', tablemount);
+    }else{
+
+        var frmok = app.buildView(text);
+        app.addHtml('#app', '<br><br>');      
+
+        app.addHtml('#app', frmok);
+        app.addHtml('#app', '<br><br>');    
+        app.addHtml('#msgbody', `Origem: <span style="font-size: 12px;">${url}</span>`);
+
+    }
+
+  }, function(error) {
+
+    console.log("Failed to fetch data.txt: " + error);
+
+  });
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 
 //============================================================================//
 
-// var pglogin = app.getHtml('login.html');
-// app.addHtml('#app', pglogin);
+// var table   = app.getHtml('table.html');
+// var menu    = app.getHtml('menu.html');
+//   menu      = app.setVars(menu, {item: 'novo titulo ze mane'});
 
-//============================================================================//
+// var titulo  = app.getHtml('tituloHeader.html');
+//   titulo    = app.setVars(titulo, {titulo: 'novo titulo ze mane'});
 
-var boxform = app.getHtml('boxform.html');
-var table   = app.getHtml('table.html');
-var menu    = app.getHtml('menu.html');
-  menu      = app.setVars(menu, {item: 'novo titulo ze mane'});
-
-var titulo  = app.getHtml('tituloHeader.html');
-  titulo    = app.setVars(titulo, {titulo: 'novo titulo ze mane'});
-
-let msg     = app.getHtml('message.html');
-    msg     = app.setVars(msg, {msg: 'fim do template.'});
+// let msg     = app.getHtml('message.html');
+//     msg     = app.setVars(msg, {msg: 'fim do template.'});
 
 
-//app init.
+// //app init.
 
-app.appNome(appNome);
-app.addHtml('#app', '<br><br>');
-app.addHtml('#app', menu);
-app.addHtml('#app', titulo);
-app.addHtml('#app', '<br>');
-app.addHtml('#app', table);
-app.addHtml('#app', '<br><br>');
-app.addHtml('#app', msg);
+// app.appNome(appNome);
+// app.addHtml('#app', '<br><br>');
+// app.addHtml('#app', menu);
+// app.addHtml('#app', titulo);
+// app.addHtml('#app', '<br>');
+// app.addHtml('#app', table);
+// app.addHtml('#app', '<br><br>');
+// app.addHtml('#app', msg);
 
-//============================================================================//
+// //============================================================================//
 
-let objs1 = p['captchas'];
-let titulo1 = 'Captchas';
+// let objs1 = p['captchas'];
+// let titulo1 = 'Captchas';
 
-let formdiv1 = app.addForm(objs1, titulo1);
+// let formdiv1 = app.addForm(objs1, titulo1);
 
-app.addHtml('#app', formdiv1);
-app.addHtml('#app', '<br><br>');
+// app.addHtml('#app', formdiv1);
+// app.addHtml('#app', '<br><br>');
 
-// // adiciona table.
-let tabb = app.createTable(tableJson);
-app.addObjHtml('#table', tabb);
+// // // adiciona table.
+// let tabb = app.createTable(tableJson);
+// app.addObjHtml('#table', tabb);
 
 
 //============================================================================//
